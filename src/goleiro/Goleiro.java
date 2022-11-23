@@ -2,41 +2,63 @@ package goleiro;
 
 import java.util.ArrayList;
 
+import cenario.AreaDoGoleiro;
 import cenario.Celula;
+import cenario.Chute;
+import cenario.PosInicialGoleiro;
+import cenario.PosMaoDireita;
+import cenario.PosMaoEsquerda;
 
 public class Goleiro {
 	private ArrayList<Celula> celulas;
-	private Posicao posGoleiro;
-	private Posicao maoDireita;
-	private Posicao maoEsquerda;
+	private PosInicialGoleiro posGoleiro;
+	private PosMaoDireita maoDireita;
+	private PosMaoEsquerda maoEsquerda;
 
-	public Goleiro(Sorteador sc,ArrayList<Celula> celulas) {
+	public Goleiro(Sorteador sc, ArrayList<Celula> celulas) {
 		this.posGoleiro = sc.getPosGoleiro();
 		this.maoDireita = sc.getMaoDireita();
 		this.maoEsquerda = sc.getMaoEsquerda();
-		this.celulas= celulas;
-		mapearArea();
+		this.celulas = celulas;
 	}
 
 	public void mapearArea() {
-		addPosIniciais();
 		criarSegmentoEsquerdo();
 		criarSegmentoDireito();
+		addPosIniciais();
 	}
+
 	private void addPosIniciais() {
-		Posicao pos[]= {posGoleiro,maoDireita,maoEsquerda}; 
-		for (Posicao posicao : pos) {
-			addArea(posicao.getX(), posicao.getY());
+		addExtremidade(posGoleiro);
+		addExtremidade(maoDireita);
+		addExtremidade(maoEsquerda);
+	}
+
+	private void addExtremidade(Celula celula) {
+		celulas.remove(buscarCelula(celula.getPosicaoX(), celula.getPosicaoY()));
+		celulas.add(celula);
+	}
+
+	private Celula buscarCelula(int x, int y) {
+		for (Celula celula : celulas) {
+			if (celula.getPosicaoX() == x && celula.getPosicaoY() == y) {
+				return celula;
+			}
 		}
-		
+		return null;
+	}
+
+	public void addArea(int x, int y) {
+		celulas.remove(buscarCelula(x, y));
+		celulas.add(new AreaDoGoleiro(x, y));
 	}
 
 	private void criarSegmentoEsquerdo() {
 		mesmaLinhaEsquerda();
-		int linhaLimite = maoEsquerda.getX();
+		int linhaLimite = maoEsquerda.getPosicaoX();
 		int contador = razaoGolMaoEsquerda();
-		for (int x = posGoleiro.getX() - 1; x >= linhaLimite; x--) {
-			int y = posGoleiro.getY();
+		for (int x = posGoleiro.getPosicaoX() - 1; x >= linhaLimite; x--) {
+			int y = posGoleiro.getPosicaoY();
 			addArea(x, y);
 			criarAdjacenteEsquerda(x, y, contador);
 			contador += contador;
@@ -46,10 +68,10 @@ public class Goleiro {
 
 	private void criarSegmentoDireito() {
 		mesmaLinhaDireita();
-		int linhaLimite = maoDireita.getX();
+		int linhaLimite = maoDireita.getPosicaoX();
 		int contador = razaoGolMaoDireita();
-		for (int x = posGoleiro.getX() - 1; x >= linhaLimite; x--) {
-			int y = posGoleiro.getY();
+		for (int x = posGoleiro.getPosicaoX() - 1; x >= linhaLimite; x--) {
+			int y = posGoleiro.getPosicaoY();
 			addArea(x, y);
 			criarAdjacenteDireita(x, y, contador);
 			contador += contador;
@@ -59,7 +81,7 @@ public class Goleiro {
 	private void criarAdjacenteDireita(int x, int y, int contador) {
 		for (int i = 0; i < contador; i++) {
 			y++;
-			if (y < maoDireita.getY()) {
+			if (y < maoDireita.getPosicaoY()) {
 				addArea(x, y);
 			}
 		}
@@ -68,40 +90,43 @@ public class Goleiro {
 	private void criarAdjacenteEsquerda(int x, int y, int contador) {
 		for (int i = 0; i < contador; i++) {
 			y--;
-			if (y > maoEsquerda.getY()) {
+			if (y > maoEsquerda.getPosicaoY()) {
 				addArea(x, y);
 			}
 		}
 	}
 
 	private void mesmaLinhaEsquerda() {
-		if (posGoleiro.getX() == maoEsquerda.getX()) {
-			for (int y = posGoleiro.getY(); y > maoEsquerda.getY(); y--) {
-				addArea(posGoleiro.getX(), y);
+		if (posGoleiro.getPosicaoX() == maoEsquerda.getPosicaoX()) {
+			for (int y = posGoleiro.getPosicaoY(); y > maoEsquerda.getPosicaoY(); y--) {
+				addArea(posGoleiro.getPosicaoX(), y);
 			}
 		}
 	}
 
 	private void mesmaLinhaDireita() {
-		if (posGoleiro.getX() == maoDireita.getX()) {
-			for (int y = posGoleiro.getY(); y < maoDireita.getY(); y++) {
-				addArea(posGoleiro.getX(), y);
+		if (posGoleiro.getPosicaoX() == maoDireita.getPosicaoX()) {
+			for (int y = posGoleiro.getPosicaoY(); y < maoDireita.getPosicaoY(); y++) {
+				addArea(posGoleiro.getPosicaoX(), y);
 			}
 		}
 	}
 
 	private int razaoGolMaoDireita() {
-		int diffColuna = (maoDireita.getY() - posGoleiro.getY()) - 1;
-		int diffLinha = (posGoleiro.getX() - maoDireita.getX()) - 1;
+		int diffColuna = (maoDireita.getPosicaoY() - posGoleiro.getPosicaoY()) - 1;
+		int diffLinha = (posGoleiro.getPosicaoX() - maoDireita.getPosicaoX()) - 1;
 		return verificaRazao(diffColuna, diffLinha);
 	}
 
 	private int razaoGolMaoEsquerda() {
-		int diffColuna = (posGoleiro.getY() - maoEsquerda.getY()) - 1;
-		int diffLinha = (posGoleiro.getX() - maoEsquerda.getX()) - 1;
+		int diffColuna = (posGoleiro.getPosicaoY() - maoEsquerda.getPosicaoY()) - 1;
+		int diffLinha = (posGoleiro.getPosicaoX() - maoEsquerda.getPosicaoX()) - 1;
 		return verificaRazao(diffColuna, diffLinha);
 	}
-
+	public void addChute(int x,int y) {
+		celulas.remove(buscarCelula(x, y));
+		celulas.add(new Chute(x,y));
+	}
 	private int verificaRazao(int diffColuna, int diffLinha) {
 		int razao = 0;
 		try {
@@ -113,13 +138,6 @@ public class Goleiro {
 			return razao;
 		} else
 			return razao + 1;
-	}
-	public void addArea(int x, int y) {
-		for (Celula celula : celulas) {
-			if(celula.getPosicaoX() == x&&celula.getPosicaoY()==y) {
-				celula.setArea(true);
-			}
-		}
 	}
 
 	public ArrayList<Celula> getCelulas() {

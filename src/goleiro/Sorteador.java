@@ -3,11 +3,15 @@ package goleiro;
 import java.util.Random;
 
 import cenario.CriarCenario;
+import cenario.PosInicialGoleiro;
+import cenario.PosMaoDireita;
+import cenario.PosMaoEsquerda;
 
 public class Sorteador {
-	private Posicao posGoleiro;
-	private Posicao maoDireita;
-	private Posicao maoEsquerda;
+	
+	private PosInicialGoleiro posGoleiro;
+	private PosMaoDireita maoDireita;
+	private PosMaoEsquerda maoEsquerda;
 	private CriarCenario c;
 	
 	public Sorteador(CriarCenario c) {
@@ -24,7 +28,7 @@ public class Sorteador {
 	private void sortearGoleiro(Random rd) {
 		int x=c.getNumeroLinhas()-1;
 		int y=rd.nextInt(c.getNumeroColunas());
-		posGoleiro= new Posicao(x,y,c);
+		posGoleiro= new PosInicialGoleiro(x,y);
 		
 	}
 	private void sortearMaoEsquerda(Random rd) {
@@ -36,7 +40,7 @@ public class Sorteador {
 			y=rd.nextInt(c.getNumeroColunas());
 			flag=y<=posGoleiro.getY()?true:false;
 		}while(flag==false);
-		maoEsquerda= new Posicao(x,y,c);
+		maoEsquerda= new PosMaoEsquerda(x,y);
 	}
 	private void sortearMaoDireita(Random rd) {
 		int x;
@@ -47,16 +51,18 @@ public class Sorteador {
 			y=rd.nextInt(c.getNumeroColunas());
 			flag=y>=posGoleiro.getY()? true:false;
 		}while(flag==false);
-		maoDireita= new Posicao(x,y,c);
+		maoDireita= new PosMaoDireita(x,y);
 	}
-	public Posicao getPosGoleiro() {
+	
+	public PosInicialGoleiro getPosGoleiro() {
 		return posGoleiro;
 	}
-	public Posicao getMaoDireita() {
+	public PosMaoDireita getMaoDireita() {
 		return maoDireita;
 	}
-	public Posicao getMaoEsquerda() {
+	public PosMaoEsquerda getMaoEsquerda() {
 		return maoEsquerda;
 	}
+	
 	
 }

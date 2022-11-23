@@ -2,11 +2,8 @@ package cenario;
 
 import java.util.ArrayList;
 
-import actions.ActionButton;
-
 public class CriarCenario {
 	private ArrayList<Celula> celulas;
-	private ArrayList<Celula> celulasVariaveis;
 	private int numeroLinhas;
 	private int numeroColunas;
 
@@ -27,19 +24,19 @@ public class CriarCenario {
 
 	private void criarTraveEsquerda() {
 		for (int i = 2; i < numeroLinhas; i++) {
-			celulas.add(new TraveEsquerda(i, 1));
+			celulas.add(new Trave(i, 1));
 		}
 	}
 
 	private void criarTraveDireita() {
 		for (int i = 2; i < numeroLinhas; i++) {
-			celulas.add(new TraveDireita(i, numeroColunas - 2));
+			celulas.add(new Trave(i, numeroColunas - 2));
 		}
 	}
 
 	private void criarTravessao() {
 		for (int i = 1; i < numeroColunas - 1; i++) {
-			celulas.add(new Travessao(1, i));
+			celulas.add(new Trave(1, i));
 		}
 	}
 
@@ -66,22 +63,7 @@ public class CriarCenario {
 		}
 	}
 
-	public void imprimirGol() {
-		for (int x = 0; x < numeroLinhas; x++) {
-			for (int y = 0; y < numeroColunas; y++) {
-				for (Celula celula : celulas) {
-					if (celula.getPosicaoX() == x && celula.getPosicaoY() == y) {
-						System.out.print(celula.getClass() + " ");
-					}
-				}
-				if (y == 16) {
-					System.out.println();
-				}
-			}
-			// System.out.println(celulas.size());
-		}
-	}
-	
+
 	public int getNumeroLinhas() {
 		return numeroLinhas;
 	}
@@ -89,19 +71,10 @@ public class CriarCenario {
 	public int getNumeroColunas() {
 		return numeroColunas;
 	}
-	public ArrayList<Celula> getCelulasVariaveis(){
-		celulasVariaveis = new ArrayList<>();
-		for (Celula celula : celulas) {
-			celulasVariaveis.add(celula.clone());
-		}
-		return celulasVariaveis;
-	}
+
 	public ArrayList<Celula> getCelulas() {
 		return celulas;
 	}
 
-	public void setCelulas(ArrayList<Celula> celulas) {
-		this.celulas = celulas;
-	}
-	
+
 }
