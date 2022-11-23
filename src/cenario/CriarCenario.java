@@ -6,13 +6,12 @@ import actions.ActionButton;
 
 public class CriarCenario {
 	private ArrayList<Celula> celulas;
+	private ArrayList<Celula> celulasVariaveis;
 	private int numeroLinhas;
 	private int numeroColunas;
-	private ActionButton action;
 
 	public CriarCenario(int numeroLinhas, int numeroColunas) {
 		this.celulas = new ArrayList<>();
-		this.action=new ActionButton();
 		this.numeroColunas = numeroColunas;
 		this.numeroLinhas = numeroLinhas;
 		mapearGol();
@@ -28,26 +27,26 @@ public class CriarCenario {
 
 	private void criarTraveEsquerda() {
 		for (int i = 2; i < numeroLinhas; i++) {
-			celulas.add(new TraveEsquerda(i, 1,action));
+			celulas.add(new TraveEsquerda(i, 1));
 		}
 	}
 
 	private void criarTraveDireita() {
 		for (int i = 2; i < numeroLinhas; i++) {
-			celulas.add(new TraveDireita(i, numeroColunas - 2,action));
+			celulas.add(new TraveDireita(i, numeroColunas - 2));
 		}
 	}
 
 	private void criarTravessao() {
 		for (int i = 1; i < numeroColunas - 1; i++) {
-			celulas.add(new Travessao(1, i,action));
+			celulas.add(new Travessao(1, i));
 		}
 	}
 
 	private void criarDentroGol() {
 		for (int i = 2; i < numeroLinhas; i++) {
 			for (int j = 2; j < numeroColunas - 2; j++) {
-				celulas.add(new DentroGol(i, j,action));
+				celulas.add(new DentroGol(i, j));
 			}
 		}
 	}
@@ -55,15 +54,15 @@ public class CriarCenario {
 	private void criarForaDoGol() {
 		// parte esquerda
 		for (int i = 1; i < numeroLinhas; i++) {
-			celulas.add(new Fora(i, 0,action));
+			celulas.add(new Fora(i, 0));
 		}
 		// parte superior
 		for (int i = 0; i < numeroColunas; i++) {
-			celulas.add(new Fora(0, i,action));
+			celulas.add(new Fora(0, i));
 		}
 		// parte direita
 		for (int i = 1; i < numeroLinhas; i++) {
-			celulas.add(new Fora(i, numeroColunas - 1,action));
+			celulas.add(new Fora(i, numeroColunas - 1));
 		}
 	}
 
@@ -82,7 +81,7 @@ public class CriarCenario {
 			// System.out.println(celulas.size());
 		}
 	}
-
+	
 	public int getNumeroLinhas() {
 		return numeroLinhas;
 	}
@@ -90,9 +89,19 @@ public class CriarCenario {
 	public int getNumeroColunas() {
 		return numeroColunas;
 	}
-
+	public ArrayList<Celula> getCelulasVariaveis(){
+		celulasVariaveis = new ArrayList<>();
+		for (Celula celula : celulas) {
+			celulasVariaveis.add(celula.clone());
+		}
+		return celulasVariaveis;
+	}
 	public ArrayList<Celula> getCelulas() {
 		return celulas;
+	}
+
+	public void setCelulas(ArrayList<Celula> celulas) {
+		this.celulas = celulas;
 	}
 	
 }
